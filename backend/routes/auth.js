@@ -7,7 +7,6 @@ const jwt=require('jsonwebtoken');
 const fetchuser=require('../middleware/fetchUser');
 const dotenv=require('dotenv').config({path:'../.env.local'});
 const JWT_SECRET=process.env.JWT_SECRET;
-console.log(JWT_SECRET);
 //Route 1: Creation of New User
 router.post('/createuser',[
     body('name').isLength({min:5,max:16}).withMessage('Name should be between 5 and 16 characters'),

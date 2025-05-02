@@ -15,6 +15,7 @@ app.use('/api/auth',require('./routes/auth'))
 //app.use('/api/notes',require('./routes/notes'))
 app.use('/api/login',require('./routes/auth'))
 app.use('/api/getUser',require('./routes/auth'))
+app.use('/api/notes',require('./routes/notes'));
 app.use(cors());
 
 app.listen(port,'0.0.0.0', () => {
