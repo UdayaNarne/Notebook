@@ -43,12 +43,10 @@ const NoteState=(props)=>{
           credentials:'same-origin',
           headers:{
             'Content-Type':'application/json',
-            'auth-token':"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjgxOGM5OTk5MzA5MWM1ZGIzMjQ5MWMyIn0sImlhdCI6MTc0NjQ1NTE5M30.sI4T_d3pj5PQw3Dse_xYnNONDOqwwjcxeezJw2L3bcM"
-          },
+            },
           redirect:'follow',
           referrerPolicy:'no-referrer',
           body:JSON.stringify({title,description,tag}),
-        
         });
         //setNotes(notes.concat(note));
       }
@@ -57,7 +55,7 @@ const NoteState=(props)=>{
         const newNotes=notes.filter((note)=>{return note._id!==id});
         setNotes(newNotes);
       }
-      const editNote=async({id,title,description,tag})=>{  //681463d87d0fb1dbe750c2a7
+      const editNote=async({id,title,description,tag})=>{  
         const URL=host+"/api/notes/updateNote/"+id;
         const response =await fetch(URL, {
           method:'PUT',
@@ -66,23 +64,13 @@ const NoteState=(props)=>{
           credentials:'same-origin',
           headers:{
             'Content-Type':'application/json',
-            'auth-token':"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjgxOGM5OTk5MzA5MWM1ZGIzMjQ5MWMyIn0sImlhdCI6MTc0NjQ1NTE5M30.sI4T_d3pj5PQw3Dse_xYnNONDOqwwjcxeezJw2L3bcM"
           },
           redirect:'follow',
           referrerPolicy:'no-referrer',
           body:JSON.stringify({title,description,tag}),
         });
         const result= await response.json(); // Response is a promise and thus without await it returns undefined
-        //console.log(result.title);
-        // const note=notes.find((note)=>{return note._id===id});
-        // if(note){
-        //   note.title=result.title;
-        //   note.description=result.description;
-        //   note.tag=result.tag;
-        // }
-        // const newNotes=notes.filter((note)=>{return note._id!==id});
-        // newNotes.push(note);
-        // setNotes(newNotes);
+
         const newNotes=notes.map((note)=>{
           if(note._id===id){
             return{
