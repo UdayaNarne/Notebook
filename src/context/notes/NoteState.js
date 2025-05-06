@@ -2,51 +2,83 @@ import {useState} from 'react';
 import NoteContext from './NoteContext'
 
 const NoteState=(props)=>{
+    const host="http://localhost:8000";
     const notes2=[
         {
-          "_id": "6816b95d7ce19095239f1387",
-          "user": "6814591401ee19ebac3bb08a",
-          "title": "Note of Projects that are pending",
-          "description": "This note contains all the projects that are pending of mine",
+          "_id": "6818caf9bf08dea242e0e06b",
+          "user": "6818c99993091c5db32491c2",
+          "title": "Projects based on OOPS",
+          "description": "Do more u understand more",
           "tag": "Work",
-          "date": "2025-05-04T00:48:29.433Z",
+          "date": "2025-05-05T14:28:09.857Z",
           "__v": 0
         },
         {
-          "_id": "6816b9cd7ce19095239f1389",
-          "user": "6814591401ee19ebac3bb08a",
-          "title": "Daily tasks that are to be done",
-          "description": "This includes daily tasks that are to be done like Yoga, Exercise to make oneself healthy",
+          "_id": "6818cb11bf08dea242e0e06d",
+          "user": "6818c99993091c5db32491c2",
+          "title": "Work",
+          "description": "My work my wish",
           "tag": "Personal",
-          "date": "2025-05-04T00:50:21.558Z",
+          "date": "2025-05-05T14:28:33.027Z",
           "__v": 0
         }
       ]
       const[notes,setNotes]=useState(notes2);
       //Adding a new note
-      function addNote({title,description,tag}){
-        const note={
-          "_id": "6816b95d7ce19095239f1388",
-          "user": "6814591401ee19ebac3bb18a",
-          "title": title,
-          "description": description,
-          "tag": tag,
-          "date": "2025-05-04T00:48:29.433Z",
-          "__v": 0
-        }
-        setNotes(notes.concat(note));
+      const addNote= async({title,description,tag})=>{
+        const URL=host+"api/notes/addNote";
+        // const note={
+        //   "_id": "6816b95d7ce19095239f1388",
+        //   "user": "6814591401ee19ebac3bb18a",
+        //   "title": title,
+        //   "description": description,
+        //   "tag": tag,
+        //   "date": "2025-05-04T00:48:29.433Z",
+        //   "__v": 0
+        // }
+        const response=await fetch(URL,{
+          method:'POST',
+          mode:'cors',
+          cache:'no-cache',
+          credentials:'same-origin',
+          headers:{
+            'Content-Type':'application/json',
+            'auth-token':"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjgxOGM5OTk5MzA5MWM1ZGIzMjQ5MWMyIn0sImlhdCI6MTc0NjQ1NTE5M30.sI4T_d3pj5PQw3Dse_xYnNONDOqwwjcxeezJw2L3bcM"
+          },
+          redirect:'follow',
+          referrerPolicy:'no-referrer',
+          body:JSON.stringify({title,description,tag}),
+        
+        });
+        //setNotes(notes.concat(note));
       }
       function deleteNote(id){
         console.log("Note is deleted:"+id);
         const newNotes=notes.filter((note)=>{return note._id!==id});
         setNotes(newNotes);
       }
-      function editNote({id,title,description,tag}){
+      const editNote=async({id,title,description,tag})=>{  //681463d87d0fb1dbe750c2a7
+        const URL=host+"/api/notes/updateNote/"+id;
+        const response =await fetch(URL, {
+          method:'PUT',
+          mode:'cors',
+          cache:'no-cache',
+          credentials:'same-origin',
+          headers:{
+            'Content-Type':'application/json',
+            'auth-token':"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjgxOGM5OTk5MzA5MWM1ZGIzMjQ5MWMyIn0sImlhdCI6MTc0NjQ1NTE5M30.sI4T_d3pj5PQw3Dse_xYnNONDOqwwjcxeezJw2L3bcM"
+          },
+          redirect:'follow',
+          referrerPolicy:'no-referrer',
+          body:JSON.stringify({title,description,tag}),
+        });
+        const result= await response.json(); // Response is a promise and thus without await it returns undefined
+        //console.log(result.title);
         // const note=notes.find((note)=>{return note._id===id});
         // if(note){
-        //   note.title=title;
-        //   note.description=description;
-        //   note.tag=tag;
+        //   note.title=result.title;
+        //   note.description=result.description;
+        //   note.tag=result.tag;
         // }
         // const newNotes=notes.filter((note)=>{return note._id!==id});
         // newNotes.push(note);

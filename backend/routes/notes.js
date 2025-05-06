@@ -50,12 +50,12 @@ router.put('/updateNote/:id',fetchuser,[
     if(description){newNote.description=description};
     if(tag){newNote.tag=tag};
     let note= await Notes.findById(req.params.id);
-    console.log(note);
+    //console.log(note);
     if(!note){
         return res.status(404).send("Note not found");
     }
-    console.log(note.user.toString());
-    console.log(req.user.id);
+    // console.log(note.user.toString());
+    // console.log(req.user.id);
     // if(note.user.toString()===req.user.id){
     //     console.log("yes");
     // }
