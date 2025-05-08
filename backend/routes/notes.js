@@ -30,7 +30,7 @@ router.post('/createNote',fetchuser,[
     note.save().then(()=>{
         res.json(note);
     }).catch((err)=>{
-        console.error(err.message);
+        //console.error(err.message);
         res.status(500).send("Internal Server Error");
     })
 })

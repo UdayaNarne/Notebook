@@ -19,9 +19,11 @@ router.post('/createuser',[
         return res.status(400).json({errors:errors.array()});
     }
     try{
+        let success=true;
         let user=await User.findOne({email:req.body.email});
         if(user){
-            return res.status(400).json({error:"User with this email already exists"});
+            success=false;
+            return res.status(400).json({success,error:"User with this email already exists"});
         }
         const salt=await bcrypt.genSalt(10);
         const secPass=(await bcrypt.hash(req.body.password,salt));
@@ -39,11 +41,12 @@ router.post('/createuser',[
         const jwtData=jwt.sign(data, JWT_SECRET);
         console.log(jwtData);
         console.log(user);
-        res.json({jwtData});
+        success=true;
+        res.json({success,jwtData});
         //return 
     }
     catch(err){
-        console.error(err.message);
+        //console.error(err.message);
         res.status(500).send("Internal Server Error");
     }
     
@@ -52,9 +55,11 @@ router.post('/createuser',[
 //Route 2: Login User
 router.post('/login',async(req,res)=>{
     const {email,password}=req.body;
+    let success=true;
     let user1=await User.findOne({email:email});
     if(!user1){
-        return res.status(400).json("Incorrect Email provided");
+        success=false;
+        return res.status(400).json({success,error:"Incorrect Email provided"});
     }
     const salt=await bcrypt.genSalt(10);
     const secPass=(await bcrypt.hash(password,salt));
@@ -65,7 +70,8 @@ router.post('/login',async(req,res)=>{
     console.log(user1.password);
     console.log(passwordCompare);
     if(!passwordCompare){
-        return res.status(400).json("Incorrect Password provided");
+        success=false;
+        return res.status(400).json({success,error:"Incorrect Password provided"});
     }
 
     const data={
@@ -73,8 +79,9 @@ router.post('/login',async(req,res)=>{
             id:user1.id,
         }
     }
+    success=true;
     const authToken=jwt.sign(data,JWT_SECRET);
-    res.json({authToken});
+    res.json({success,authToken});
 })
 
 //Route 3 : Get Logged in User Details
@@ -107,7 +114,7 @@ router.put('/updateUser/:id',fetchuser,[
         newUser.password=secPass;
     }
     let user1=await User.findById(req.params.id);
-    console.log("User1:",user1);
+    //console.log("User1:",user1);
     if(!user1){
         return res.status(404).send("User not found");
     }
@@ -122,9 +129,9 @@ router.delete('/deleteUser/:id',fetchuser,async(req,res)=>{
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).send("Invalid user ID format");
     }
-    console.log("Requested ID:", req.params.id);
+    //console.log("Requested ID:", req.params.id);
     let user1=await User.findById(req.params.id);
-    console.log("User1:",user1);
+    //console.log("User1:",user1);
     if(!user1){
         return res.status(404).send("User not found");
     }
