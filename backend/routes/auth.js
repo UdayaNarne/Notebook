@@ -8,6 +8,7 @@ const fetchuser=require('../middleware/fetchUser');
 const dotenv=require('dotenv').config({path:'../.env.local'});
 const JWT_SECRET=process.env.JWT_SECRET;
 const mongoose=require('mongoose');
+
 //Route 1: Creation of New User
 router.post('/createuser',[
     body('name').isLength({min:5,max:16}).withMessage('Name should be between 5 and 16 characters'),
@@ -38,15 +39,13 @@ router.post('/createuser',[
                 id:user.id,
             }
         }
-        const jwtData=jwt.sign(data, JWT_SECRET);
-        console.log(jwtData);
-        console.log(user);
+        const jwtData=jwt.sign(data, JWT_SECRET,{expiresIn:'1h'});
+        //console.log(jwtData);
+        //console.log(user);
         success=true;
         res.json({success,jwtData});
-        //return 
     }
     catch(err){
-        //console.error(err.message);
         res.status(500).send("Internal Server Error");
     }
     
@@ -64,11 +63,10 @@ router.post('/login',async(req,res)=>{
     const salt=await bcrypt.genSalt(10);
     const secPass=(await bcrypt.hash(password,salt));
 
-    //let passwordCompare=await bcrypt.compare(user1.password,secPass);
     let passwordCompare = await bcrypt.compare(password, user1.password);
-    console.log(password);
-    console.log(user1.password);
-    console.log(passwordCompare);
+    // console.log(password);
+    // console.log(user1.password);
+    // console.log(passwordCompare);
     if(!passwordCompare){
         success=false;
         return res.status(400).json({success,error:"Incorrect Password provided"});
@@ -80,7 +78,7 @@ router.post('/login',async(req,res)=>{
         }
     }
     success=true;
-    const authToken=jwt.sign(data,JWT_SECRET);
+    const authToken=jwt.sign(data,JWT_SECRET,{expiresIn:'1h'});
     res.json({success,authToken});
 })
 
@@ -114,7 +112,6 @@ router.put('/updateUser/:id',fetchuser,[
         newUser.password=secPass;
     }
     let user1=await User.findById(req.params.id);
-    //console.log("User1:",user1);
     if(!user1){
         return res.status(404).send("User not found");
     }
@@ -124,14 +121,13 @@ router.put('/updateUser/:id',fetchuser,[
     user1=await User.findByIdAndUpdate(req.params.id,{$set:newUser},{new:true});
     res.json(user1);
 })
+
 //Route 5: Delete User
 router.delete('/deleteUser/:id',fetchuser,async(req,res)=>{
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).send("Invalid user ID format");
     }
-    //console.log("Requested ID:", req.params.id);
     let user1=await User.findById(req.params.id);
-    //console.log("User1:",user1);
     if(!user1){
         return res.status(404).send("User not found");
     }

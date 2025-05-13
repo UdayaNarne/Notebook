@@ -14,6 +14,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 function App() {
   const [alert, setAlert] = useState(null); 
+  //const [credentials, setCredentials] = useState({email: "", password: "", remember: false});
   const showAlert = (message, type) => {
     setAlert({
       msg: message,
